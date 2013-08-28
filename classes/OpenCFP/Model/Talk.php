@@ -152,4 +152,104 @@ class Talk
 
         return $talks;
     }
+
+    /**
+     * Assemble grid data from the speakers and talks table
+     * @return array
+     */
+    public function getGrid()
+    {
+        $talks = array();
+        $speakers = array();
+        $days = 0;
+        $slots = 0;
+        $rooms = 0;
+
+        $sql = "SELECT
+            id, user_id, day, slot, room, title, description
+        FROM talks
+        WHERE day is not null
+        ORDER BY day, room, slot";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $speakers[$row['user_id']] = array();
+            if (!isset($talks[$row['day']])) {
+                $talks[$row['day']] = array();
+            }
+            if (!isset($talks[$row['day']][$row['slot']])) {
+                $talks[$row['day']][$row['slot']] = array();
+            }
+            $talks[$row['day']][$row['slot']][$row['room']] = array(
+                'speakerId' => $row['user_id'],
+                'talkId' => $row['id'],
+                'talkTitle' => $row['title'],
+                'description' => $row['description'],
+            );
+            if ($row['day'] > $days) {
+                $days = $row['day'];
+            }
+            if ($row['slot'] > $slots) {
+                $slots = $row['slot'];
+            }
+            if ($row['room'] > $rooms) {
+                $rooms = $row['room'];
+            }
+        }
+
+        $sql = "SELECT user_id, name, bio FROM speakerInfo where user_id in (" .
+            implode(', ', array_keys($speakers)) . ")";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $speakers[$row['user_id']] = array(
+                'name' => $row['name'],
+                'bio' => $row['bio'],
+            );
+        }
+
+        $grid = array(
+            'days' => $days,
+            'slots' => $slots,
+            'rooms' => $rooms,
+            'speakers' => $speakers,
+            'talks' => $talks,
+        );
+        $this->findSpans($grid);
+        return $grid;
+    }
+
+    private function findSpans(&$grid)
+    {
+        foreach($grid['talks'] as $day=>$slots) {
+            foreach ($slots as $slot => $rooms) {
+                foreach ($rooms as $room => $talk) {
+                    $slotSpan = 1;
+                    $roomSpan = 1;
+                    while (
+                        !isset($grid['talks'][$day][$slot+$slotSpan][$room]) &&
+                        ($slot + $slotSpan) <= $grid['slots']
+                    ) {
+                        $slotSpan += 1;
+                    }
+                    while (
+                        !isset($grid['talks'][$day][$slot][$room+$roomSpan]) &&
+                        ($room + $roomSpan) <= $grid['rooms']
+                    ) {
+                        $roomSpan += 1;
+                    }
+                    if ($slotSpan > 1) {
+                        $grid['talks'][$day][$slot][$room]['slotSpan'] = $slotSpan;
+                    }
+                    if ($roomSpan > 1) {
+                        $grid['talks'][$day][$slot][$room]['roomSpan'] = $roomSpan;
+                    }
+                }
+            }
+        }
+    }
+
+
 }

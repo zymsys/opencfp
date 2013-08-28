@@ -120,6 +120,7 @@ class Bootstrap
         $app->get('/dashboard', 'OpenCFP\Controller\DashboardController::indexAction');
         $app->get('/talk/edit/{id}', 'OpenCFP\Controller\TalkController::editAction');
         $app->get('/talk/create', 'OpenCFP\Controller\TalkController::createAction');
+        $app->get('/talk/grid', 'OpenCFP\Controller\TalkController::gridAction');
         $app->post('/talk/create', 'OpenCFP\Controller\TalkController::processCreateAction');
         $app->post('/talk/update', 'OpenCFP\Controller\TalkController::updateAction');
         $app->post('/talk/delete', 'OpenCFP\Controller\TalkController::deleteAction');

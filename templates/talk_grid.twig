@@ -1,0 +1,35 @@
+{% for day in 1..days %}
+{% set slotsArray = talks[day] %}
+<div class="day_number">Day #{{ day }}</div>
+<table class="table schedule_day">
+    <thead>
+    <tr>
+        <th>Time</th>
+        {% for room in 1..rooms %}
+        <th>Room {{ room }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for slot in 1..slots %}
+    {% set roomArray = slotsArray[slot] %}
+    <tr class="schedule_slot">
+        <th>Slot {{ slot }}</th>
+        {% for room in 1..rooms %}
+        {% set talk = roomArray[room] %}
+            {% if talk %}
+            <td class="{{ random(['success','error','warning','info']) }}"
+                {% if talk.roomSpan %}colspan="{{ talk.roomSpan }}"{% endif %}
+                {% if talk.slotSpan %}rowspan="{{ talk.slotSpan }}"{% endif %}>
+                <div class="talk_title">
+                    <a class="fancybox fancybox.iframe" href="#">{{ talk.talkTitle }}</a>
+                </div>
+                <div class="talk_speaker">{{ speakers[talk.speakerId].name }}</div>
+            </td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}

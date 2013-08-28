@@ -107,5 +107,20 @@ CREATE TABLE `talks` (
     `description` text,
     `type` char(50),
     `user_id` int(10) unsigned NOT NULL,
-    PRIMARY KEY (`id`)
+    `day` tinyint DEFAULT NULL,
+    `room` tinyint DEFAULT NULL,
+    `slot` tinyint DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `spot` (`day`,`slot`,`room`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP VIEW IF EXISTS `speakerInfo`;
+CREATE VIEW `speakerInfo` AS
+SELECT
+	users.id AS user_id,
+	CONCAT(users.first_name, ' ', users.last_name) AS name,
+	speakers.bio AS bio
+FROM
+	users
+LEFT JOIN speakers ON speakers.user_id = users.id
+ORDER BY last_name, first_name;

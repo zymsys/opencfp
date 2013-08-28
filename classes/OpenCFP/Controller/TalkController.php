@@ -201,4 +201,13 @@ class TalkController
 
         return $app->json(array('delete' => 'no'));
     }
+
+    public function gridAction(Request $req, Application $app)
+    {
+        $app['twig']->addFilter('var_dump',      new \Twig_Filter_Function('var_dump'));
+        $template = $app['twig']->loadTemplate('talk_grid.twig');
+        $talk = new Talk($app['db']);
+        $data = $talk->getGrid();
+        return $template->render($data);
+    }
 }

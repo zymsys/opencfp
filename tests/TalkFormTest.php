@@ -71,6 +71,9 @@ class TalkFormTest extends \PHPUnit_Framework_TestCase
      */
     public function titleValidatesCorrectly($title, $expectedResponse)
     {
+        $faker = \Faker\Factory::create();
+        $faker->text();
+
         $data = array('title' => $title);
         $form = new \OpenCFP\Form\TalkForm($data, $this->purifier);
         $form->sanitize();
