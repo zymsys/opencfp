@@ -215,13 +215,18 @@ class Talk
 
     public function setFavorite($talkId, $status)
     {
-        $sql = "UPDATE talks t SET t.favorite = ? WHERE id = ?";
+        $sql = "UPDATE talks t SET t.favourite = ? WHERE id = ?";
         $stmt = $this->_db->prepare($sql);
 
-        $stmt->execute(array(
+        $ok = $stmt->execute(array(
             (int) $status,
             (int) $talkId,
         ));
+
+        if (!$ok) {
+            $info = $stmt->errorInfo();
+            throw new \Exception($info[2], $info[1]);
+        }
 
         return ($stmt->rowCount() === 1);
     }

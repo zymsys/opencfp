@@ -17,8 +17,8 @@ Talk.prototype.favorite = function() {
     type: "POST",
     url: url,
     data: data,
-    success: function() {
-      _this.$el.find('i').toggleClass('star-favorite--selected');
+    success: function(data) {
+        _this.$el.find('i').toggleClass('star-favorite--selected');
     },
     error: _this.onError
   });
@@ -45,7 +45,11 @@ Talk.prototype.select = function() {
 };
 
 Talk.prototype.onError = function(xhr, status, errorMessage) {
-  console.log(status + ': ' + errorMessage);
+    var response = $.parseJSON(xhr.responseText);
+    console.log(status + ': ' + errorMessage);
+    if (response.message) {
+        alert(response.message);
+    }
 };
 
 // Add Listeners

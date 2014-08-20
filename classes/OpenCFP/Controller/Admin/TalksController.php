@@ -2,6 +2,7 @@
 namespace OpenCFP\Controller\Admin;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use OpenCFP\Model\Talk;
 use OpenCFP\Model\Speaker;
@@ -122,8 +123,15 @@ class TalksController
         }
 
         $talk = new Talk($app['db']);
-        $talk->setFavorite($req->get('id'), $status);
-
+        try {
+            $talk->setFavorite($req->get('id'), $status);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(array(
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ), 500);
+        }
         return true;
     }
 
