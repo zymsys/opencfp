@@ -99,6 +99,7 @@ class SpeakersController
             'speaker' => $speaker,
             'photo_path' => $app['uploadPath'],
             'page' => $req->get('page'),
+            'airport' => $this->findAirport($speaker['airport']),
         );
         return $template->render($templateData);
     }
@@ -134,6 +135,20 @@ class SpeakersController
         return $app->redirect($all['url'] . '/admin/speakers');
     }
 
+    private function findAirport($airport)
+    {
+        $fileName = APP_DIR . "/config/airports.dat";
+        if (!file_exists($fileName)) {
+            return false;
+        }
+        $fd = fopen($fileName, 'r');
+        while (($data = fgetcsv($fd)) !== false) {
+            if ($data[4] == $airport) {
+                fclose($fd);
+                return $data[2] . ' / ' . $data[3];
+            }
+        }
+        fclose($fd);
+        return "Unknown Airport";
+    }
 }
-
-
