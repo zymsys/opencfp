@@ -2,7 +2,7 @@
 {% block content %}
     <h2 class="headline">
         {{ talk.title }}
-        <a href="#" id="talk-favorite-{{ talk.id }}" class="js-talk-favorite" data-id="{{ talk.id }}"><i class="fa fa-star star-favorite{% if talk.favorite == 1 %} star-favorite--selected{% endif %}"></i></a>
+        {% include 'shared/favourite.twig' %}
         <a href="#" id="talk-select-{{ talk.id }}" class="js-talk-select" data-id="{{ talk.id }}"><i class="fa fa-check-square check-select{% if talk.selected == 1 %} check-select--selected{% endif %}"></i></a>
     </h2>
     <h4>Submitted by <a href="{{ site.url }}/admin/speakers/{{ talk.user_id }}">{{ speaker.first_name }} {{ speaker.last_name }}</a></h4>
@@ -12,8 +12,8 @@
         <h4>Other talks by this speaker</h4>
         {% for talk in otherTalks %}
             <a href="{{ site.url}}/admin/talks/{{ talk.id }}">{{ talk.title }}</a>
-            <a href="#" id="talk-favorite-{{ talk.id }}" class="js-talk-favorite" data-id="{{ talk.id }}"><i class="fa fa-star star-favorite{% if talk.favorite == 1 %} star-favorite--selected{% endif %}"></i></a>
-                                <a href="#" id="talk-select-{{ talk.id }}" class="js-talk-select" data-id="{{ talk.id }}"><i class="fa fa-check-square check-select{% if talk.selected == 1 %} check-select--selected{% endif %}"></i></a><br>
+            {% include 'shared/favourite.twig' %}
+            <a href="#" id="talk-select-{{ talk.id }}" class="js-talk-select" data-id="{{ talk.id }}"><i class="fa fa-check-square check-select{% if talk.selected == 1 %} check-select--selected{% endif %}"></i></a><br>
         {% endfor %}
     {% endif %}
 

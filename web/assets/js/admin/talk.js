@@ -1,27 +1,31 @@
-function Talk(id, $el) {
-  this.$el = $el;
-  this.id = id;
-  this.baseUrl = '/admin/talks/';
+function Talk($el) {
+    this.$el = $el;
+    this.id = $el.data('id');
+    this.status = $el.data('status');
+    this.baseUrl = '/admin/talks/';
 };
 
 Talk.prototype.favorite = function() {
-  var _this = this;
-  var url = this.baseUrl + this.id + '/favorite';
-  var data = { id: this.id };
+    var _this = this;
+    var url = this.baseUrl + this.id + '/favorite';
+    var shouldClear = this.$el.find('i').hasClass('star-favorite--selected');
+    var data = {
+        id: this.id,
+        status: shouldClear ? 0 : this.status
+    };
 
-  if (this.$el.find('i').hasClass('star-favorite--selected')) {
-    data.delete = true;
-  }
-
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: data,
-    success: function(data) {
-        _this.$el.find('i').toggleClass('star-favorite--selected');
-    },
-    error: _this.onError
-  });
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function (data) {
+            $('.star-favorite' + _this.id).removeClass('star-favorite--selected');
+            if (!shouldClear) {
+                _this.$el.find('i').addClass('star-favorite--selected');
+            }
+        },
+        error: _this.onError
+    });
 };
 
 Talk.prototype.select = function() {
@@ -54,13 +58,13 @@ Talk.prototype.onError = function(xhr, status, errorMessage) {
 
 // Add Listeners
 $('.js-talk-favorite').on('click', function(e) {
-    var talk = new Talk($(this).data('id'), $(this));
+    var talk = new Talk($(this));
     e.preventDefault();
     talk.favorite();
 });
 
 $('.js-talk-select').on('click', function(e) {
-    var talk = new Talk($(this).data('id'), $(this));
+    var talk = new Talk($(this));
     e.preventDefault();
     talk.select();
 });

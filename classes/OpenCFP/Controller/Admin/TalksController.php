@@ -116,15 +116,15 @@ class TalksController
             return $app->redirect($app['url'] . '/dashboard');
         }
 
-        $status = true;
-
+        $talkId = $req->get('id');
+        $status = $req->get('status');
         if ($req->get('delete') !== null) {
             $status = false;
         }
 
         $talk = new Talk($app['db']);
         try {
-            $talk->setFavorite($req->get('id'), $status);
+            $talk->setFavorite($talkId, $status);
         }
         catch (\Exception $e) {
             return new JsonResponse(array(

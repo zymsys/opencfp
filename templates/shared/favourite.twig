@@ -1,0 +1,20 @@
+<a
+        href="#"
+        id="talk-favorite-{{ talk.id }}"
+        class="js-talk-favorite"
+        data-id="{{ talk.id }}"
+        data-status="1">
+    <i
+            class="fa fa-thumbs-o-up star-favorite star-favorite{{ talk.id }}{% if talk.favourite == 1 %} star-favorite--selected{% endif %}"><!--
+    --></i>
+</a>
+<a
+        href="#"
+        id="talk-favorite-{{ talk.id }}"
+        class="js-talk-favorite"
+        data-id="{{ talk.id }}"
+        data-status="2">
+    <i
+            class="fa fa-thumbs-o-down star-favorite star-favorite{{ talk.id }}{% if talk.favourite == 2 %} star-favorite--selected{% endif %}">
+    </i>
+</a>
